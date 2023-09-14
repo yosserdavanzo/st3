@@ -1,3 +1,4 @@
+from typing import Any
 from game.TickTackToe import TickTackToe
 import numpy as np
 import pygame
@@ -29,6 +30,8 @@ class Cursor():
             return True
 
 class SuperTickTackToe(gym.Env):
+    ##############################################################
+    #### Vars
     # pygame
 
     # gym env
@@ -41,6 +44,10 @@ class SuperTickTackToe(gym.Env):
     sub_boards:[[TickTackToe]]
     player_count:int = 0
     cursor:Cursor
+
+
+    ##############################################################
+    #### Dunders
 
     def __init__(self, render_mode=None, size=3) -> None:
         # Pygame data
@@ -67,6 +74,10 @@ class SuperTickTackToe(gym.Env):
             out += "\n"
         out += "\n"
         return out
+
+
+    ##############################################################
+    #### Actions
 
     def getNextMark(self) -> int:
         if self.player_count < 2:
@@ -110,6 +121,9 @@ class SuperTickTackToe(gym.Env):
             else:
                 self.cursor.reset()
             return (valid_move, sub_winner, super_winner)
+
+    ##############################################################
+    #### Drawing and Rendering
 
     def drawBoard(self, canvas, board:TickTackToe, y_0:int,  x_0:int, y_f:int, x_f:int, width=1):
         y_diff = y_f - y_0
@@ -157,7 +171,6 @@ class SuperTickTackToe(gym.Env):
 
         pygame.draw.rect(canvas, yellow, ( x0, y0, segment_width, segment_width), width=9)
 
-
     def render(self):
         if self.render_mode == "rgb_array":
             return self._render_frame()
@@ -203,3 +216,23 @@ class SuperTickTackToe(gym.Env):
                 np.array(pygame.surfarray.pixels3d(canvas)), axes = (1,0,2)
             )
 
+
+    ##############################################################
+    #### Gymnasium
+    def _get_obs(self):
+        return
+    
+    def _get_info(self):
+        return
+
+    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[Any, dict[str, Any]]:
+        super().reset(seed=seed, options=options)
+
+        self.__init__(self.render_mode, self.size)
+        obs = self._get_obs()
+        info = self._get_info()
+
+        if self.render_mode == "human":
+            self._render_frame()
+        
+        return obs, info
