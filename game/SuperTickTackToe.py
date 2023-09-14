@@ -147,6 +147,16 @@ class SuperTickTackToe(gym.Env):
                     x_c = x_0 + (j * x_segment) + x_mid_segment
                     pygame.draw.circle(canvas, color, (x_c, y_c), y_mid_segment)
         
+    def drawCursor(self, canvas):
+        if not self.cursor.isValid():
+            return
+        yellow = (240,230,140)
+        segment_width = self.window_size // 3
+        y0 = self.cursor.board_y * segment_width
+        x0 = self.cursor.board_x * segment_width
+
+        pygame.draw.rect(canvas, yellow, ( x0, y0, segment_width, segment_width), width=9)
+
 
     def render(self):
         if self.render_mode == "rgb_array":
@@ -170,6 +180,7 @@ class SuperTickTackToe(gym.Env):
         # Hyper Board
         self.drawBoard(canvas, self.hyper_board, 0, 0, self.window_size, self.window_size, width=9)
 
+        self.drawCursor(canvas)
         # Sub Boards
         buffer = 20
         segment = self.window_size//3
