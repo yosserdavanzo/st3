@@ -29,6 +29,11 @@ class Cursor():
             self.board_x = x
             return True
 
+    def liniarize(self):
+        x = self.board_x if self.board_x is not None else -1
+        y = self.board_y if self.board_y is not None else -1
+        return np.array([y,x], dtype=np.int8)
+
 class SuperTickTackToe(gym.Env):
     ##############################################################
     #### Vars
@@ -47,7 +52,7 @@ class SuperTickTackToe(gym.Env):
 
 
     ##############################################################
-    #### Dunders
+    #### Standard
 
     def __init__(self, render_mode=None, size=3) -> None:
         # Pygame data
@@ -219,11 +224,22 @@ class SuperTickTackToe(gym.Env):
 
     ##############################################################
     #### Gymnasium
+    def liniarize(self):
+        out = np.array([], dtype=np.int8)
+        # add the hyper board
+        np.append(out, self.hyper_board.liniarize())
+        # add the sub boards
+        for board in self.sub_boards:
+            np.append(out, board.liniarize())
+        #add the cursor
+        np.append(out, self.cursor.liniarize())
+        return out
+
     def _get_obs(self):
-        return
+        return {"world": self.liniarize()}
     
     def _get_info(self):
-        return
+        return {}
 
     def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[Any, dict[str, Any]]:
         super().reset(seed=seed, options=options)

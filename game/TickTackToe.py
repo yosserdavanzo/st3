@@ -1,3 +1,5 @@
+import numpy as np
+
 class TickTackToe():
     board:[[int]]
 
@@ -9,7 +11,13 @@ class TickTackToe():
         for row in self.board:
             out+=(str(row) + "\n")
         return out
-    
+
+    def liniarize(self):
+        out = np.array([], dtype=np.int8)
+        for row in self.board:
+            np.append(out, row)
+        return out
+
     def _checkForWinner(self)-> int:
         # Top Left Group
         top_left = self.board[0][0]
